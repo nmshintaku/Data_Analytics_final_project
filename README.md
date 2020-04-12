@@ -67,27 +67,27 @@ Files are named according to the following naming convention: 'databasename_loca
 * USGS_Tahoe_gage_height.csv
 Information gathered from https://waterdata.usgs.gov/nwis/qw
 
-agency_cd: USGS 
-site_no: A unique number that corresponds to the site identifier or gage station.
-datetime: month/day/year
-gage_height: numeric value, gage height recorded in feet. Current lake elevation is measured at 6,220 feet + current gage height measurements will give the changes in lake level
-qual_code: data-value qualification code where A is Approved for publication (processing and review completed), P is Provisional data subject to revision, and e is value has been estimated
++ agency_cd: USGS 
++ site_no: A unique number that corresponds to the site identifier or gage station.
++ datetime: month/day/year
++ gage_height: numeric value, gage height recorded in feet. Current lake elevation is measured at 6,220 feet + current gage height measurements will give the changes in lake level
++ qual_code: data-value qualification code where A is Approved for publication (processing and review completed), P is Provisional data subject to revision, and e is value has been estimated
 
 * NOAA_Tahoe_climate_data.csv
 Information gathered from: https://www.ncdc.noaa.gov/cdo-web/datasets
 
-STATION: A unique code within the zip code identifying the station from which measurements were taken.
-NAME: Name of the station
-LATITUDE
-LONGITUDE
-ELEVATION: Elevation above mean sea level (tenths of meters)
-DATE: month/day/year
-PRCP: Daily precipitation in inches
-SNOW: Daily snowfall in inches
-SNWD: Daily snow depth in inches
-TAVG: Daily Average Temperature in degrees fahrenheit
-TMAX: Daily Maximum Temperature in degrees fahrenheit
-TMIN: Daily Minimum Temperature in degrees fahrenheit
++ STATION: A unique code within the zip code identifying the station from which measurements were taken.
++ NAME: Name of the station
++ LATITUDE
++ LONGITUDE
++ ELEVATION: Elevation above mean sea level (tenths of meters)
++ DATE: month/day/year
++ PRCP: Daily precipitation in inches
++ SNOW: Daily snowfall in inches
++ SNWD: Daily snow depth in inches
++ TAVG: Daily Average Temperature in degrees fahrenheit
++ TMAX: Daily Maximum Temperature in degrees fahrenheit
++ TMIN: Daily Minimum Temperature in degrees fahrenheit
 
 ## Scripts and code
 
