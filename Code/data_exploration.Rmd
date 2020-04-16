@@ -1,0 +1,89 @@
+---
+title: "data_exploration"
+author: "Nikki Shintaku"
+date: "4/15/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+library(tidyverse)
+
+USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
+NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
+
+
+#ADD THEME
+```
+
+```{r}
+#Changing Date on USGS Data
+view(USGS_gage_height)
+class(USGS_gage_height$datetime)
+
+USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%m/%d/%y") 
+
+# We are formatting the data as year-2digit, month, day
+USGS_gage_height$datetime <- format(USGS_gage_height$datetime, "%y%m%d")
+
+#paste 19 if the input is greater than 181231 or 20 if it is less than 
+create.early.dates <- (function(d) {
+       paste0(ifelse(d > 191231,"19","20"),d)
+       })
+#run the function on the USGS flow data for the datatime column
+USGS_gage_height$datetime <- create.early.dates(USGS_gage_height$datetime)
+
+#now reformat as a data in the format that we want
+USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%Y%m%d")
+
+class(USGS_gage_height$datetime)
+```
+
+```{r}
+#changing date on NOAA Data
+class(NOAA_climate$DATE)
+NOAA_climate$DATE <- as.Date(NOAA_climate$DATE, format = "%Y-%m-%d")
+class(NOAA_climate$DATE)
+```
+
+```{r}
+#explore USGS data
+ggplot(USGS_gage_height, aes(x = datetime, y = gage_height)) +
+  geom_line()
+```
+
+```{r}
+#explore NOAA data
+ggplot(NOAA_climate, aes(x = DATE, y = PRCP)) +
+  geom_line()
+
+ggplot(NOAA_climate) +
+  geom_histogram(aes(x = PRCP), bins = 20) +
+  xlim(0,5) +
+  ylim(0,8000)
+
+ggplot(NOAA_climate) +
+  geom_freqpoly(aes(x = PRCP), bins = 50) +
+  geom_freqpoly(aes(x = TAVG), bins = 50, color = "blue") +
+  geom_freqpoly(aes(x = SNOW), bins = 50, lty = 2)
+
+summary(NOAA_climate$PRCP) #582 NAs
+summary(NOAA_climate$SNOW) #46752 NAs
+summary(NOAA_climate$TAVG) #57747 NAs
+summary(NOAA_climate$TMAX) #10883 NAs
+```
+
+```{r}
+#write to csv
+
+#write.csv(USGS.flow.data, file = "./Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
+```
+
+
+
