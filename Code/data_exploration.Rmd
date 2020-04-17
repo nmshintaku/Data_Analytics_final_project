@@ -57,6 +57,7 @@ summary(USGS_gage_height$gage_height) #3 NAs
 class(NOAA_climate$DATE)
 NOAA_climate$DATE <- as.Date(NOAA_climate$DATE, format = "%Y-%m-%d")
 class(NOAA_climate$DATE)
+
 ```
 
 ```{r}
@@ -92,12 +93,10 @@ summary(NOAA_climate$TAVG) #57747 NAs
 summary(NOAA_climate$TMAX) #10883 NAs
 summary(NOAA_climate$SNWD) #34812 NAs
 summary(NOAA_climate$TMIN) #10882 NAs
+
+levels(NOAA_climate$NAME)
+
 ```
 
-```{r}
-#code to write to csv
-
-#write.csv(USGS.flow.data, file = "./Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
-```
 
 

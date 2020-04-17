@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 getwd()
 library(tidyverse)
 library(ggthemes)
+library(lubridate)
 
 USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
 NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
@@ -51,14 +52,35 @@ class(NOAA_climate$DATE)
 #Wrangling USGS data, keeping only datetime, qual code, and gage_height
 USGS_date_gage <- select(USGS_gage_height, datetime, gage_height, qual_code)
 
+names(USGS_date_gage)[1] <- "DATE"
+
 write.csv(USGS_date_gage, file = "./Data/Processed/USGS_Site10337000_gage_processed.csv", row.names = FALSE)
 ```
 
-
 ```{r}
 #Wrangling NOAA data
+#TAHOE CITY, CA US
+NOAA_Tahoecity_climate <- 
+  NOAA_climate %>%
+  filter(NAME == "TAHOE CITY, CA US") %>%
+  select(NAME, DATE:TMIN)
 
+interval(first(NOAA_Tahoecity_climate$DATE), last(NOAA_Tahoecity_climate$DATE))
+#1903-09-13 UTC--2020-03-30 UTC
 
+write.csv(NOAA_Tahoecity_climate, file = "./Data/Processed/NOAA_TahoeCity_climate_processed.csv", row.names = FALSE)
+```
+
+```{r}
+#combining datasets into one
+USGS_NOAA_combined <- full_join(USGS_date_gage, NOAA_Tahoecity_climate)
+
+USGS_NOAA_combined <- arrange(USGS_NOAA_combined, DATE)
+
+interval(first(USGS_NOAA_combined$DATE), last(USGS_NOAA_combined$DATE))
+class(USGS_NOAA_combined$DATE)
+
+write.csv(USGS_NOAA_combined, file = "./Data/Processed/USGS_NOAA_combined_processed.csv", row.names = FALSE)
 ```
 
 
