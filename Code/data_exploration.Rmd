@@ -14,12 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 getwd()
 library(tidyverse)
+library(ggthemes)
 
 USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
 NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
 
+#theme
+mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
 
-#ADD THEME
+theme_set(mytheme)
 ```
 
 ```{r}
@@ -43,6 +48,8 @@ USGS_gage_height$datetime <- create.early.dates(USGS_gage_height$datetime)
 USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%Y%m%d")
 
 class(USGS_gage_height$datetime)
+
+summary(USGS_gage_height$gage_height) #3 NAs
 ```
 
 ```{r}
@@ -56,6 +63,9 @@ class(NOAA_climate$DATE)
 #explore USGS data
 ggplot(USGS_gage_height, aes(x = datetime, y = gage_height)) +
   geom_line()
+
+ggplot(USGS_gage_height) +
+  geom_point(aes(x = datetime, y = gage_height))
 ```
 
 ```{r}
@@ -73,17 +83,21 @@ ggplot(NOAA_climate) +
   geom_freqpoly(aes(x = TAVG), bins = 50, color = "blue") +
   geom_freqpoly(aes(x = SNOW), bins = 50, lty = 2)
 
+ggplot(NOAA_climate) +
+  geom_point(aes(x = PRCP, y = TAVG))
+
 summary(NOAA_climate$PRCP) #582 NAs
 summary(NOAA_climate$SNOW) #46752 NAs
 summary(NOAA_climate$TAVG) #57747 NAs
 summary(NOAA_climate$TMAX) #10883 NAs
+summary(NOAA_climate$SNWD) #34812 NAs
+summary(NOAA_climate$TMIN) #10882 NAs
 ```
 
 ```{r}
-#write to csv
+#code to write to csv
 
 #write.csv(USGS.flow.data, file = "./Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
 ```
-
 
 

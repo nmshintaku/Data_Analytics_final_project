@@ -1,0 +1,64 @@
+---
+title: "data_wrangling"
+author: "Nikki Shintaku"
+date: "4/16/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+library(tidyverse)
+library(ggthemes)
+
+USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
+NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
+
+#theme
+mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+
+theme_set(mytheme)
+```
+
+```{r}
+USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%m/%d/%y") 
+USGS_gage_height$datetime <- format(USGS_gage_height$datetime, "%y%m%d")
+
+#paste 19 if the input is greater than 181231 or 20 if it is less than 
+create.early.dates <- (function(d) {
+       paste0(ifelse(d > 191231,"19","20"),d)
+       })
+USGS_gage_height$datetime <- create.early.dates(USGS_gage_height$datetime)
+USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%Y%m%d")
+class(USGS_gage_height$datetime)
+```
+
+```{r}
+#changing date on NOAA Data
+class(NOAA_climate$DATE)
+NOAA_climate$DATE <- as.Date(NOAA_climate$DATE, format = "%Y-%m-%d")
+class(NOAA_climate$DATE)
+```
+
+```{r}
+#Wrangling USGS data, keeping only datetime, qual code, and gage_height
+USGS_date_gage <- select(USGS_gage_height, datetime, gage_height, qual_code)
+
+write.csv(USGS_date_gage, file = "./Data/Processed/USGS_Site10337000_gage_processed.csv", row.names = FALSE)
+```
+
+
+```{r}
+#Wrangling NOAA data
+
+
+```
+
+
