@@ -29,6 +29,7 @@ theme_set(mytheme)
 ```
 
 ```{r}
+#changing to date format
 USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%m/%d/%y") 
 USGS_gage_height$datetime <- format(USGS_gage_height$datetime, "%y%m%d")
 
@@ -50,7 +51,11 @@ class(NOAA_climate$DATE)
 
 ```{r}
 #Wrangling USGS data, keeping only datetime, qual code, and gage_height
-USGS_date_gage <- select(USGS_gage_height, datetime, gage_height, qual_code)
+#drop NAs and get rid of outliers 1-01-1920 : 4-10-1920
+USGS_date_gage <- USGS_gage_height %>%
+  select(datetime, gage_height, qual_code) %>%
+  drop_na(gage_height) %>%
+  filter(datetime > as.Date("1920-04-10"))
 
 names(USGS_date_gage)[1] <- "DATE"
 
