@@ -2,8 +2,10 @@
 title: "data_wrangling"
 author: "Nikki Shintaku"
 date: "4/16/2020"
-output: html_document
-editor_options: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
   chunk_output_type: console
 ---
 
@@ -11,9 +13,10 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, include=FALSE}
 getwd()
 library(tidyverse)
+library(cowplot)
 library(ggthemes)
 library(lubridate)
 
@@ -28,7 +31,7 @@ mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") 
 theme_set(mytheme)
 ```
 
-```{r}
+```{r, include=FALSE}
 #changing to date format
 USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%m/%d/%y") 
 USGS_gage_height$datetime <- format(USGS_gage_height$datetime, "%y%m%d")
@@ -42,14 +45,14 @@ USGS_gage_height$datetime <- as.Date(USGS_gage_height$datetime, format = "%Y%m%d
 class(USGS_gage_height$datetime)
 ```
 
-```{r}
+```{r, include=FALSE}
 #changing date on NOAA Data
 class(NOAA_climate$DATE)
 NOAA_climate$DATE <- as.Date(NOAA_climate$DATE, format = "%Y-%m-%d")
 class(NOAA_climate$DATE)
 ```
 
-```{r}
+```{r, include=FALSE}
 #Wrangling USGS data, keeping only datetime, qual code, and gage_height
 #drop NAs and get rid of outliers 1-01-1920 : 4-10-1920
 USGS_date_gage <- USGS_gage_height %>%
@@ -62,7 +65,7 @@ names(USGS_date_gage)[1] <- "DATE"
 write.csv(USGS_date_gage, file = "./Data/Processed/USGS_Site10337000_gage_processed.csv", row.names = FALSE)
 ```
 
-```{r}
+```{r, include=FALSE}
 #Wrangling NOAA data
 #TAHOE CITY, CA US
 NOAA_Tahoecity_climate <- 
@@ -76,7 +79,7 @@ interval(first(NOAA_Tahoecity_climate$DATE), last(NOAA_Tahoecity_climate$DATE))
 write.csv(NOAA_Tahoecity_climate, file = "./Data/Processed/NOAA_TahoeCity_climate_processed.csv", row.names = FALSE)
 ```
 
-```{r}
+```{r, include=FALSE}
 #combining datasets into one
 USGS_NOAA_combined <- full_join(USGS_date_gage, NOAA_Tahoecity_climate)
 
@@ -85,7 +88,116 @@ USGS_NOAA_combined <- arrange(USGS_NOAA_combined, DATE)
 interval(first(USGS_NOAA_combined$DATE), last(USGS_NOAA_combined$DATE))
 class(USGS_NOAA_combined$DATE)
 
+USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMAX_C = (TMAX - 32) * (9/5))
+USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMIN_C = (TMIN - 32) * (9/5))
+
 write.csv(USGS_NOAA_combined, file = "./Data/Processed/USGS_NOAA_combined_processed.csv", row.names = FALSE)
 ```
+
+#Data Visualization
+
+```{r, include=FALSE}
+library(viridis)
+library(RColorBrewer)
+library(colormap)
+
+USGS_gage_processed <- read.csv("./Data/Processed/USGS_Site10337000_gage_processed.csv")
+NOAA_climate_processed <- read.csv("./Data/Processed/NOAA_TahoeCity_climate_processed.csv")
+USGS_NOAA_combined <- read.csv("./Data/Processed/USGS_NOAA_combined_processed.csv")
+
+#theme
+mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+#mytheme <- theme_bw(base_size = 14) +
+  #theme(axis.text = element_text(color = "black"), 
+       # legend.position = "top",
+        #panel.grid.major = element_line(size = 0.2, linetype = 'solid', color = "grey70"),
+        #panel.grid.minor = element_blank())
+
+theme_set(mytheme)
+
+USGS_gage_processed$DATE <- as.Date(USGS_gage_processed$DATE, format = "%Y-%m-%d") 
+class(USGS_gage_processed$DATE)
+
+NOAA_climate_processed$DATE <- as.Date(NOAA_climate_processed$DATE, format = "%Y-%m-%d")
+
+USGS_NOAA_combined$DATE <- as.Date(USGS_NOAA_combined$DATE, format = "%Y-%m-%d")
+
+```
+
+```{r}
+#ggplot(USGS_NOAA_combined, aes(x= DATE, y = gage_height, color = PRCP)) +
+  #geom_point(size = 0.5, alpha = 0.5) +
+  #scale_color_gradientn(colors = rainbow(5), limits = c(0,0.5), breaks = c(0, 0.25, 0.5))
+
+#tmax_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = TMAX_C)) +
+  #geom_point(size = 0.5, alpha = 0.5, shape = 1) +
+  #labs(x = "Date", y = "Max Daily Temperature (degree C)")
+#print(tmax_plot)
+
+gage_height_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = gage_height)) +
+  geom_line(color = "dodgerblue2") +
+  labs(x = "Date", y = "Gage Height (ft)") +
+  ylim(0, 10) 
+#print(gage_height_plot)
+
+PRCP_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = PRCP)) +
+  geom_point(shape = 1, size = 0.5, color = "indianred2") +
+  labs(x = "Date", y = "Precipitation (in)") +
+  ylim(0, 8)
+#print(PRCP_plot)
+
+snow_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = SNOW)) +
+  geom_point(size = 0.5, shape = 8, color = "plum3", alpha = 0.5) +
+  labs(x = "Date", y = "Snow Fall (in)") +
+  ylim(0, 45) 
+#print(snow_plot)
+
+tmin_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = TMIN_C, fill = TMIN_C > 0)) +
+  geom_bar(stat = "identity")+
+  labs(x = "Date", y = expression(paste("Minimum Temperature",degree,"C"))) +
+  ylim(-70, 50) +
+  scale_fill_manual(values = c("blue4", "red2")) +
+  theme(legend.position = "none",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+#print(tmin_plot)
+
+graphs_combined <- plot_grid(gage_height_plot, PRCP_plot, snow_plot, tmin_plot, 
+                             labels = "AUTO",
+                             align = "h",
+                             axis = "b")
+
+
+#caption <- ggdraw() +
+ # draw_figure_label("Figure 1: Lake Tahoe climate data and water level time series. (A) Gage height measurements (lake level) in feet where the lake elevation is measured at 6,220 feet. Lake elevation plus daily gage height measurement will give the changes in lake level. (B) Daily precipitation in Tahoe City, CA. (C) Daily snow fall in Tahoe City, CA. (D) Daily minimum temperatures in Tahoe City, CA.",
+            # position = "bottom.left",
+           #  x = 0,
+            # y =0,
+            # size = 10)
+
+#snow_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = SNOW)) +
+  #geom_point(size = 0.5, shape = 8, color = "plum3", alpha = 0.5) +
+  #labs(x = "Date", y = "Snow Fall (in)", caption = "Figure 1: Lake Tahoe climate data and water level time series. (A) Gage height measurements 
+     #  (lake level) in feet where the lake elevation is measured at 6,220 feet. Lake elevation plus 
+      # daily gage height measurement will give the changes in lake level. (B) Daily precipitation 
+       #in Tahoe City, CA. (C) Daily snow fall in Tahoe City, CA. (D) Daily minimum temperatures in 
+       #Tahoe City, CA.") +
+ # ylim(0, 45) +
+  #theme(plot.caption = element_text(hjust = 0, face = "italic"))
+
+#plot_grid(graphs_combined)    
+
+
+```
+
+```{r, include=TRUE,fig.width=10, fig.height = 6, fig.cap="Figure 1: Lake Tahoe climate data and water level time series. (A) Gage height measurements (lake level) in feet where the lake elevation is measured at 6,220 feet. Lake elevation plus daily gage height measurement will give the changes in lake level. (B) Daily precipitation in Tahoe City, CA. (C) Daily snow fall in Tahoe City, CA. (D) Daily minimum temperatures in Tahoe City, CA."}
+
+plot_grid(graphs_combined) 
+
+
+```
+Figure 1: Lake Tahoe climate data and water level time series. (A) Gage height measurements (lake level) in feet where the lake elevation is measured at 6,220 feet. Lake elevation plus daily gage height measurement will give the changes in lake level. (B) Daily precipitation in Tahoe City, CA. (C) Daily snow fall in Tahoe City, CA. (D) Daily minimum temperatures in Tahoe City, CA.
+
 
 
