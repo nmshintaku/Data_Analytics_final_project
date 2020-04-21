@@ -162,7 +162,7 @@
 \NormalTok{tmin_plot <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(USGS_NOAA_combined, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ DATE, }\DataTypeTok{y =}\NormalTok{ TMIN_C, }\DataTypeTok{fill =}\NormalTok{ TMIN_C }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Date"}\NormalTok{, }\DataTypeTok{y =} \KeywordTok{expression}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Minimum Temperature"}\NormalTok{,degree,}\StringTok{"C"}\NormalTok{))) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylim}\NormalTok{(}\OperatorTok{-}\DecValTok{70}\NormalTok{, }\DecValTok{50}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylim}\NormalTok{(}\OperatorTok{-}\DecValTok{25}\NormalTok{, }\DecValTok{25}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_manual}\NormalTok{(}\DataTypeTok{values =} \KeywordTok{c}\NormalTok{(}\StringTok{"blue4"}\NormalTok{, }\StringTok{"red2"}\NormalTok{)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"none"}\NormalTok{,}
         \DataTypeTok{plot.caption =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{hjust =} \DecValTok{0}\NormalTok{, }\DataTypeTok{face =} \StringTok{"italic"}\NormalTok{))}
@@ -188,7 +188,7 @@
 \end{verbatim}
 
 \begin{verbatim}
-## Warning: Removed 473 rows containing missing values (position_stack).
+## Warning: Removed 438 rows containing missing values (position_stack).
 \end{verbatim}
 
 \begin{Shaded}

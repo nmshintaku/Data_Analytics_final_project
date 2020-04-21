@@ -88,8 +88,8 @@ USGS_NOAA_combined <- arrange(USGS_NOAA_combined, DATE)
 interval(first(USGS_NOAA_combined$DATE), last(USGS_NOAA_combined$DATE))
 class(USGS_NOAA_combined$DATE)
 
-USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMAX_C = (TMAX - 32) * (9/5))
-USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMIN_C = (TMIN - 32) * (9/5))
+USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMAX_C = (TMAX - 32) * (5/9))
+USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMIN_C = (TMIN - 32) * (5/9))
 
 write.csv(USGS_NOAA_combined, file = "./Data/Processed/USGS_NOAA_combined_processed.csv", row.names = FALSE)
 ```
@@ -101,28 +101,20 @@ library(viridis)
 library(RColorBrewer)
 library(colormap)
 
-USGS_gage_processed <- read.csv("./Data/Processed/USGS_Site10337000_gage_processed.csv")
-NOAA_climate_processed <- read.csv("./Data/Processed/NOAA_TahoeCity_climate_processed.csv")
-USGS_NOAA_combined <- read.csv("./Data/Processed/USGS_NOAA_combined_processed.csv")
-
-#theme
-mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") +
-  theme(axis.text = element_text(color = "black"), 
-        legend.position = "top")
 #mytheme <- theme_bw(base_size = 14) +
   #theme(axis.text = element_text(color = "black"), 
        # legend.position = "top",
         #panel.grid.major = element_line(size = 0.2, linetype = 'solid', color = "grey70"),
         #panel.grid.minor = element_blank())
 
-theme_set(mytheme)
+#theme_set(mytheme)
 
-USGS_gage_processed$DATE <- as.Date(USGS_gage_processed$DATE, format = "%Y-%m-%d") 
-class(USGS_gage_processed$DATE)
+#USGS_gage_processed$DATE <- as.Date(USGS_gage_processed$DATE, format = "%Y-%m-%d") 
+#class(USGS_gage_processed$DATE)
 
-NOAA_climate_processed$DATE <- as.Date(NOAA_climate_processed$DATE, format = "%Y-%m-%d")
+#NOAA_climate_processed$DATE <- as.Date(NOAA_climate_processed$DATE, format = "%Y-%m-%d")
 
-USGS_NOAA_combined$DATE <- as.Date(USGS_NOAA_combined$DATE, format = "%Y-%m-%d")
+#USGS_NOAA_combined$DATE <- as.Date(USGS_NOAA_combined$DATE, format = "%Y-%m-%d")
 
 ```
 
@@ -157,7 +149,7 @@ snow_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = SNOW)) +
 tmin_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = TMIN_C, fill = TMIN_C > 0)) +
   geom_bar(stat = "identity")+
   labs(x = "Date", y = expression(paste("Minimum Temperature",degree,"C"))) +
-  ylim(-70, 50) +
+  ylim(-25, 25) +
   scale_fill_manual(values = c("blue4", "red2")) +
   theme(legend.position = "none",
         plot.caption = element_text(hjust = 0, face = "italic"))
