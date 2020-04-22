@@ -2,8 +2,10 @@
 title: "data_exploration"
 author: "Nikki Shintaku"
 date: "4/15/2020"
-output: html_document
-editor_options: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
   chunk_output_type: console
 ---
 
@@ -15,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 getwd()
 library(tidyverse)
 library(ggthemes)
+library(knitr)
 
 USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
 NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
@@ -95,8 +98,29 @@ summary(NOAA_climate$SNWD) #34812 NAs
 summary(NOAA_climate$TMIN) #10882 NAs
 
 levels(NOAA_climate$NAME)
+summary(NOAA_climate$NAME)
 
 ```
 
+DO SUMMARY STATS TABLE
 
+#USGS Data
+
+Parameter               | Summary
+------------------------|---------------
+Total Number of Samples | 22,734
+Start Date              | 1957-10-01
+End Date                | 2019-12-31
+Gage Height (ft) Mean   | 5.86
+Gage Height (ft) Median | 6.32
+Gage Height (ft) Min    | 0.26
+Gage Height (ft) Max    | 9.40
+
+#NOAA Climate Data
+
+```{r,fig.width=1}
+NOAA_summary <- summary(NOAA_climate)
+
+kable(NOAA_summary, caption = "Summary Table of NOAA Climate Raw Data") 
+```
 

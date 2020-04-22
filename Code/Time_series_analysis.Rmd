@@ -119,9 +119,17 @@ Tahoe_gage_height_trend
 summary(Tahoe_gage_height_trend)
 #significant trend over time bc p-value is 2.827e-09 (less than 0.05), z = -5.9414
 
-ggplot(Tahoe_gage_height_monthly, aes(x = Date, y = gage_height)) +
-  geom_point() +
-  geom_line()
+
+
+#ggplot(Tahoe_gage_height_monthly, aes(x = Date, y = gage_height)) +
+ # geom_line() +
+ # geom_vline(xintercept = as.numeric(as.Date("1987-08-01")), lty = 2, color = "red2") +
+ # geom_vline(xintercept = as.numeric(as.Date("1995-04-01")), lty = 2, color = "red2") +
+ # geom_vline(xintercept = as.numeric(as.Date("2001-06-01")), lty = 2, color = "red2") +
+  #geom_vline(xintercept = as.numeric(as.Date("2017-01-01")), lty = 2, color = "red2") +
+  #labs(y = "Gage Height (in)") +
+  #ylim(0,10) 
+
 
 ```
 
@@ -129,8 +137,57 @@ If a significant trend was present, we could compute a **Sen's Slope** to quanti
 
 ```{r}
 #Sen's Slope to quantify trend of lake level over time 
-
+sens.slope(Tahoe_gage_monthly_ts, conf.level = 0.95)
+#Sen's Slop z = -5.955, p value = 2.601e-09, sen's slope -0.002 (linear rate of change- decreasing)
+#95 percent confidence interval:
+ #-0.002881512 -0.001386843
 
 ```
 
+```{r}
+#Pettitt's test for single change-point detection
+monthly_ts_pettitt <- pettitt.test(Tahoe_gage_monthly_ts) #1st change
+#low p-value (2.2E-16) indicates significant changepoint at observation 359 which corresponds to 1987-08-01
+pettitt.test(Tahoe_gage_monthly_ts[360:747]) #2nd change
+#low pvale 2.2e-16 change at 92 (observation 451) 1995-04-01
+pettitt.test(Tahoe_gage_monthly_ts[452:747]) #3rd change
+#low pvalue 1.83E-13 at 74 (observation 525) 2001-06-01
+pettitt.test(Tahoe_gage_monthly_ts[526:747]) #4th change
+#low pvalue 1.123E-08 at 187 (observation 712) 2017-01-01
+pettitt.test(Tahoe_gage_monthly_ts[713:747])
+#p value 0.5 no more significant changes
+
+ts_pettitt <- pettitt.test(Tahoe_gage_height_ts) #1st change
+#low p-value (2.2E-16) significant change point at observation 10906 which corresponds to 1987-08-13
+pettitt.test(Tahoe_gage_height_ts[10907:22734]) #2nd Change
+#low p-value 2.2e-16 change at 2830 (observation 13736) "1995-05-13"
+pettitt.test(Tahoe_gage_height_ts[13736:22734]) #3rd change
+#low p-value 2.2e-16 change at 2255 (observation 15991) "2001-07-15"
+pettitt.test(Tahoe_gage_height_ts[15991:22734]) #4th change
+#low pvalue 2.2e-16 change at 5660 (observation 21651) "2017-01-12"
+pettitt.test(Tahoe_gage_height_ts[21651:22734]) #5th change
+#low pvalue change at 117 (observation 21768)  "2017-05-09"
+pettitt.test(Tahoe_gage_height_ts[21768:22734])
+```
+
+```{r}
+#graph with pettitt change points 
+change_points <- data.frame(text = c("Change Point 1", "Change Point 2", "Change Point 3", 
+                                     "Change Point 4"),
+                            date = c(as.Date("1987-08-01"), as.Date("1995-04-01"),
+                                     as.Date("2001-06-01"), as.Date("2017-01-01")),
+                            stringsAsFactors = FALSE)
+
+ggplot(Tahoe_gage_height_monthly, aes(x = Date, y = gage_height)) +
+  geom_line() +
+  geom_vline(mapping = aes(xintercept = date), 
+             data = change_points, 
+             show.legend = FALSE, 
+             color = "red2", 
+             lty = 2) +
+  geom_text(mapping = aes(x = date, y = 0, label = text, angle = 90, vjust = -1, hjust = -0.01), 
+            data = change_points) +
+  labs(y = "Gage Height (in)") +
+  ylim(0,10)
+```
 
