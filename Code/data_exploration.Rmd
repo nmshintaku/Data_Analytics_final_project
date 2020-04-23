@@ -18,6 +18,7 @@ getwd()
 library(tidyverse)
 library(ggthemes)
 library(knitr)
+#library(kableExtra)
 
 USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
 NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
@@ -122,5 +123,6 @@ Gage Height (ft) Max    | 9.40
 NOAA_summary <- summary(NOAA_climate)
 
 kable(NOAA_summary, caption = "Summary Table of NOAA Climate Raw Data") 
+  #kable_styling(latex_options = "scale_down")
 ```
 

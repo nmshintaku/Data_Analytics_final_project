@@ -19,6 +19,7 @@ library(tidyverse)
 library(cowplot)
 library(ggthemes)
 library(lubridate)
+library(zoo)
 
 USGS_gage_height <- read.csv("./Data/Raw/USGS_tahoe_gage_height.csv")
 NOAA_climate <- read.csv("./Data/Raw/NOAA_Tahoe_climate_data.csv")
@@ -57,12 +58,14 @@ class(NOAA_climate$DATE)
 #drop NAs and get rid of outliers 1-01-1920 : 4-10-1920
 USGS_date_gage <- USGS_gage_height %>%
   select(datetime, gage_height, qual_code) %>%
-  drop_na(gage_height) %>%
-  filter(datetime > as.Date("1920-04-10"))
+  filter(datetime > as.Date("1920-04-10")) 
 
 names(USGS_date_gage)[1] <- "DATE"
 
+USGS_date_gage$gage_height <- na.approx(USGS_date_gage$gage_height)
+
 write.csv(USGS_date_gage, file = "./Data/Processed/USGS_Site10337000_gage_processed.csv", row.names = FALSE)
+
 ```
 
 ```{r, include=FALSE}
@@ -77,7 +80,31 @@ interval(first(NOAA_Tahoecity_climate$DATE), last(NOAA_Tahoecity_climate$DATE))
 #1903-09-13 UTC--2020-03-30 UTC
 
 write.csv(NOAA_Tahoecity_climate, file = "./Data/Processed/NOAA_TahoeCity_climate_processed.csv", row.names = FALSE)
+
+summary(NOAA_climate_processed$PRCP) #450 NA
+summary(NOAA_climate_processed$SNOW) #2592 NA
+summary(NOAA_climate_processed$SNWD) #9509 NA
+summary(NOAA_climate_processed$TAVG)
+summary(NOAA_climate_processed$TMAX) #374 NA
+
 ```
+
+```{r}
+NOAA_tahoecity_data <- summary(NOAA_tahoecity_data)
+
+kable(NOAA_tahoecity_data, caption = "Summary Table of NOAA Tahoe City Data") 
+```
+
+```{r}
+#wrangling all stations of NOAA climate data
+NOAA_climate_all <- 
+  NOAA_climate %>%
+  select(NAME, DATE:TMIN)
+
+write.csv(NOAA_climate_all, file = "./Data/Processed/NOAA_climate_allstations_processed.csv", row.names = FALSE)
+  
+```
+
 
 ```{r, include=FALSE}
 #combining datasets into one
@@ -92,6 +119,35 @@ USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMAX_C = (TMAX - 32) * (5/9))
 USGS_NOAA_combined <- mutate(USGS_NOAA_combined, TMIN_C = (TMIN - 32) * (5/9))
 
 write.csv(USGS_NOAA_combined, file = "./Data/Processed/USGS_NOAA_combined_processed.csv", row.names = FALSE)
+```
+
+```{r}
+#wrangling the NOAA data for the same time period as USGS 1957
+interval(first(USGS_gage_processed$DATE), last(USGS_gage_processed$DATE))
+#1957-10-01 UTC--2019-12-31 UTC
+
+USGS_NOAA_combined$DATE <- as.Date(USGS_NOAA_combined$DATE, format = "%Y-%m-%d")
+
+USGS_NOAA_samedates <- 
+  USGS_NOAA_combined %>%
+  filter(DATE > as.Date("1957-09-30")) %>%
+  filter(DATE < as.Date("2020-01-01")) %>%
+  select(-TAVG)
+
+summary(USGS_NOAA_samedates$PRCP) #92 NA
+summary(USGS_NOAA_samedates$SNOW) #371 NA
+summary(USGS_NOAA_samedates$SNWD) #1009 NA
+summary(USGS_NOAA_samedates$TMAX) #122 NA
+summary(USGS_NOAA_samedates$TMIN) #95 NA
+summary(USGS_NOAA_samedates$TAVG) #all are NA
+
+USGS_NOAA_samedates$PRCP <- na.approx(USGS_NOAA_samedates$PRCP)
+USGS_NOAA_samedates$SNOW <- na.approx(USGS_NOAA_samedates$SNOW)
+USGS_NOAA_samedates$SNWD <- na.approx(USGS_NOAA_samedates$SNWD)
+USGS_NOAA_samedates$TMAX <- na.approx(USGS_NOAA_samedates$TMAX)
+USGS_NOAA_samedates$TMIN <- na.approx(USGS_NOAA_samedates$TMIN)
+
+write.csv(USGS_NOAA_samedates, file = "./Data/Processed/USGS_NOAA_samedate_processed.csv", row.names = FALSE)
 ```
 
 #Data Visualization
