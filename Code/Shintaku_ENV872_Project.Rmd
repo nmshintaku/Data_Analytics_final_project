@@ -1,0 +1,144 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Predictors of Lake Level Changes in Lake Tahoe, CA"
+subtitle: "https://github.com/nmshintaku/Data_Analytics_final_project"
+author: "Nikki Shintaku"
+fontsize: 12pt
+mainfont: Times New Roman
+editor_options: 
+  chunk_output_type: console
+---
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+```{r setup, include=FALSE}
+getwd()
+library(tidyverse)
+library(cowplot)
+library(ggthemes)
+library(lubridate)
+library(knitr)
+library(trend)
+library(zoo)
+
+# Set ggplot theme
+mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+
+theme_set(mytheme)
+
+# Load datasets
+USGS_gage_processed <- read.csv("./Data/Processed/USGS_Site10337000_gage_processed.csv")
+NOAA_climate_processed <- read.csv("./Data/Processed/NOAA_TahoeCity_climate_processed.csv")
+USGS_NOAA_combined <- read.csv("./Data/Processed/USGS_NOAA_combined_processed.csv")
+
+#NOAA_allstations_processed <- read.csv("./Data/Processed/NOAA_climate_allstations_processed.csv")
+USGS_NOAA_samedates <- read.csv("./Data/Processed/USGS_NOAA_samedate_processed.csv")
+
+```
+
+# Rationale and Research Questions
+
+Lake Tahoe measures at 6,220 feet above sea level, and is 22 miles long and 12 miles long spanning across the California-Nevada state border. Lake Tahoe water is 99.994% pure contributing its legendary, beautiful water clarity. However, Lake Tahoe is facing decline of water clarity and health from the impacts of climate change, invasive species, and pollution. Climate change is causing more precipitation to fall as rain rather than snow, which leads to increase stormwater runoff carrying sediment into Lake Tahoe. In addition, California is experiencing extended droughts affecting amount of annual precipitation. Inadvertently, climate change is also increasing the lake's water temperature and affecting regional weather patterns that could change the lake's ecosystem. Snowmelt from 63 tributaries in the watershed adds 65% of Lake Tahoe's water, and the other 35% falls as precipitation directly in the lake. 
+
+Lake Tahoe's water level is controlled at the Tahoe City Dam, its only outlet. The legal limit for water above the natural rim at that dam is 6,229.1 ft. If the lake reaches its legal limit, flooding would begin to impact the area along with damage from erosion. With the unforeseeable consequences of climate change and the task to keep water levels below maximum legal limit, it is important to understand what atmospheric factors play a role in Lake Tahoe's water level. 
+
+This analysis investigates the trends in Lake Tahoe's water level accross the time period 1957 - 2019, and the possible drivers of lake level through the research questions:
+
+1. How does lake level in Lake Tahoe change over the years?
+
+2. What are significant atmospheric predictors of lake level in Lake Tahoe?
+
+The gage station site for measuring lake water level (or gage height) is located in Tahoe City, CA where the dam is controlled, and the data was downloaded from USGS. Subsequent atmospheric data include precipitation, snow fall, snow depth, average daily temperature, maximum daily temperature, and minimum daily temperature downloaded from NOAA and subsetted to the Tahoe City, CA station to be as accurate as possible for data collection location. 
+
+*Fun Fact: If you were to pour Lake Tahoe out onto an area the size of California, the water would still be 14 inches deep.*
+
+\newpage
+
+# Dataset Information
+
+## USGS Gage Height Data
+
+The data for lake level was downloaded from USGS Water-Quality Data for the Nation website at https://waterdata.usgs.gov/nwis/qw. The dataset contains daily gage height measurements in feet from January 1920 - December 2019 from one station (Site #103370000) in Tahoe City, CA. USGS reports that gage height is measured from the recorded lake elevation of 6,220 ft as the zero basline. Gage height measurement + current lake elevation (6,220 ft) will give the actual lake level from sea level. 
+
+This dataset was relatively easy to wrangle; unneccesary columns were dropped, leaving only date and gage height. There was a time period from January 1920 - April 1920 with gage height measurements, and then no measurements until October 1, 1957 so a decision was made to remove the 3 months of data in 1920 because the gap between 1920 and 1957 is too large to interpolate daily measurements. In addition, the three months of data is too short of a time period to do a time series analysis. After that wranging, there were 3 gage height NAs so these were linearly interpolated to create a complete dataset. 
+
+```{r table1, echo = FALSE, table.cap="\\label{tab:table1}Data Summary"}
+
+Data <- c("Total Number of Samples", "Start Date", "End Date", "Gage Height Mean (ft)", "Gage Height Median (ft)", "Gage Height Min (ft)", "Gage Height Max (ft)")
+
+Summary <- c("22,737", "1957-10-01", "2019-12-31", "5.86", "6.32", "0.26", "9.40")
+
+data_label <- data.frame(Data, Summary)
+colnames(data_label) <- (c("Data", "Summary"))
+kable(data_label, caption = "\\label{tab:table} USGS Gage Height Data Summary")
+
+```
+
+## NOAA Climate Data
+
+The atmospheric data was downloaded from NOAA National Centers for Environmental Information at https://www.ncdc.noaa.gov/cdo-web/. This dataset contains daily measurements for precipitation, snow fall, snow depth, average daily temperature, maximum daily temperature, and minimum daily temperature beginning from September 13, 1903 - March 30, 2020 from 5 different stations within the zip code of 96145 (for Tahoe City, CA). Precipitation, snowfall, and snow depth are measured in inches, and temperatures are all measured in fahrenheit. 
+
+With such a large time period for this dataset, there is a lot of NAs and an uneven amount of measurements across the stations. To be as accurate as possible for location of both the gage height station and climate station, the station named "TAHOE CITY, CA US" was filterd out to be used in this analysis. The data for the Tahoe City station ranges from September 13, 1903 - March 30, 2020 so the dates were filtered to match the same time period as the gage height measurements from October 1, 1957 - December 31, 2019. From here, presence of NAs were checked, and the entire column for average daily temperature was NAs so that column was deleted entirely. The rest of the data with NAs were linearly interpolated to create a complete dataset.   
+
+```{r table2, echo = FALSE, table.cap="\\label{tab:table2}Data Summary"}
+
+variable <- c("Start Date", "End Date", "Precipitation (in)", "Snow Fall (in)", "Snow Depth (in)", "Daily Temp Max (F)", "Daily Temp Min (F)")
+
+Date <- c("1957-10-01", "2019-12-31", "-", "-", "-", "-", "-")
+
+Mean <- c("-", "-", "0.09", "0.49", "7.74", "56.82", "31.35")
+
+Median <- c("-", "-", "0", "0", "0", "55", "31")
+  
+Min <- c("-", "-", "0", "0", "0", "11", "-16")
+  
+Max <- c("-", "-", "6.77", "42", "120", "94", "79")
+
+data_label <- data.frame(variable, Date, Mean, Median, Min, Max)
+colnames(data_label) <- (c("Variable", "Date", "Mean", "Median", "Min", "Max"))
+kable(data_label, caption = "\\label{tab:table} NOAA Tahoe City Climate Data Summary")
+```
+
+Lastly, the USGS processed data and the NOAA Tahoe City climate processed data were joined together by date to create a large dataset containing gage height and climate data together. For data explorataion and visualization purposes, temperature in celsisus was calculated for minimum and maximum daily temperatures. 
+
+\newpage
+
+# Exploratory Analysis 
+
+
+
+\newpage
+
+# Analysis
+
+
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 
