@@ -128,8 +128,18 @@ par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(gage_height_slm3)
 par(mfrow = c(1,1))
 
+cor.test(USGS_NOAA_samedates$gage_height,USGS_NOAA_samedates$TMIN)
+#      cor 
+#0.1590895
+
+gageheight_by_tmin <- ggplot(USGS_NOAA_samedates, aes(x = TMIN, y = gage_height)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+print(gageheight_by_tmin)
+
 gage_height_slm3 <- lm(data = USGS_NOAA_samedates, log(gage_height) ~ TMIN)
 summary(gage_height_slm3)
+#p-value < 2.2e-16, Adjusted R-squared:  0.02128 , 22732 degrees
 
 ggplot(USGS_NOAA_samedates, aes(x = TMIN, y = gage_height)) +
   geom_point()
@@ -144,6 +154,9 @@ par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(gage_height_slm4)
 par(mfrow = c(1,1))
 
+cor.test(USGS_NOAA_samedates$gage_height,USGS_NOAA_samedates$TMAX)
+#0.1053062 
+
 gage_height_slm5 <- lm(data = USGS_NOAA_samedates, log(gage_height) ~ TMAX)
 summary(gage_height_slm4) #same results as reg data 
 
@@ -152,11 +165,20 @@ ggplot(USGS_NOAA_samedates, aes(x = TMAX, y = gage_height)) +
   geom_smooth(method = "lm")
 ```
 
+```{r}
+gage_height_slm6 <- lm(data = USGS_NOAA_samedates, gage_height ~ SNOW)
+summary(gage_height_slm6)
+
+gage_height_slm7 <- lm(data = USGS_NOAA_samedates, gage_height ~ SNWD)
+summary(gage_height_slm7)
+```
 
 ```{r}
 #non-parametric equivalent: Spearman's Rho
 cor.test(USGS_NOAA_samedates$gage_height, USGS_NOAA_samedates$PRCP, method = "spearman", exact = FALSE)
 #rho -0.02840093 , S = 2.0139e+12, p-value = 1.845e-05
+cor.test(USGS_NOAA_samedates$gage_height, USGS_NOAA_samedates$TMIN, method = "spearman", exact = FALSE)
+
 ```
 
 #Multiple Regression
@@ -201,7 +223,14 @@ lmtest::bptest(Gage_model_AIC)
 #ols_plot_cooksd_bar(Gage_model_AIC)
 ```
 
+```{r}
+date_lm <- lm(data = USGS_NOAA_samedates, gage_height ~ DATE + TMIN)
+summary(date_lm)
 
+ggplot(USGS_NOAA_samedates, aes(x = TMIN, y = gage_height, color = as.numeric(as.Date(DATE)))) +
+  geom_point() +
+  scale_color_viridis()
+```
 
 
 

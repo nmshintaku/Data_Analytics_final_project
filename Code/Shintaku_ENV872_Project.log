@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2020.4.22)  23 APR 2020 23:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2020.4.22)  24 APR 2020 15:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -721,10 +721,22 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 99.
 
 (/Users/nikkishintaku/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
+)
+<"""Tahoe".png, id=49, 875.49944pt x 584.76755pt>
+File: """Tahoe".png Graphic file (type png)
+<use """Tahoe".png>
+Package pdftex.def Info: """Tahoe".png  used on input line 103.
+(pdftex.def)             Requested size: 469.77023pt x 313.77106pt.
+[1
 
 {/Users/nikkishintaku/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.
-map}] (./Shintaku_ENV872_Project.toc
+map}pdfTeX warning (ext4): destination with the same identifier (name{figure.1}
+) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.107 \newpage
+               <./Tahoe.png>] (./Shintaku_ENV872_Project.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <12> on input line 3.
 LaTeX Font Info:    External font `lmex10' loaded for size
@@ -744,152 +756,203 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 \openout6 = `Shintaku_ENV872_Project.lof'.
 
 [4] [5] [6] [7]
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-3-1".pdf, id=118, 
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-3-1".pdf, id=133, 
 722.7pt x 433.62pt>
 File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-3-1".pdf Grap
 hic file (type pdf)
 <use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-3-1".pdf>
 Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-3-1".pdf  used on input line 279.
+chunk-3-1".pdf  used on input line 285.
 (pdftex.def)             Requested size: 469.76045pt x 281.85628pt.
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-5-1".pdf, id=119, 
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-5-1".pdf, id=134, 
 722.7pt x 433.62pt>
 File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-5-1".pdf Grap
 hic file (type pdf)
 <use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-5-1".pdf>
 Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-5-1".pdf  used on input line 291.
+chunk-5-1".pdf  used on input line 297.
 (pdftex.def)             Requested size: 469.76045pt x 281.85628pt.
-[8pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
-has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.294 
-       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-3-1.pdf>]
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-6-1".pdf, id=135, 
-722.7pt x 433.62pt>
-File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-6-1".pdf Grap
-hic file (type pdf)
-<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-6-1".pdf>
-Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-6-1".pdf  used on input line 297.
-(pdftex.def)             Requested size: 469.76045pt x 281.85628pt.
-[9pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
+[8pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.300 
+       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-3-1.pdf>]
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-6-1".pdf, id=151, 
+722.7pt x 433.62pt>
+File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-6-1".pdf Grap
+hic file (type pdf)
+<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-6-1".pdf>
+Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
+chunk-6-1".pdf  used on input line 303.
+(pdftex.def)             Requested size: 469.76045pt x 281.85628pt.
+[9pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.306 
        <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-5-1.pdf>] [1
-0pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) h
+0pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.311 \newpage
+l.317 \newpage
                <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-6-1.
 pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 3
-41.
+47.
 (/Users/nikkishintaku/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-7-1".pdf, id=160, 
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-7-1".pdf, id=175, 
 469.755pt x 325.215pt>
 File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-7-1".pdf Grap
 hic file (type pdf)
 <use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-7-1".pdf>
 Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-7-1".pdf  used on input line 356.
+chunk-7-1".pdf  used on input line 362.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [11]
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-8-1".pdf, id=168, 
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-8-1".pdf, id=183, 
 469.755pt x 325.215pt>
 File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-8-1".pdf Grap
 hic file (type pdf)
 <use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-8-1".pdf>
 Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-8-1".pdf  used on input line 369.
+chunk-8-1".pdf  used on input line 375.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[12pdfTeX warning (ext4): destination with the same identifier (name{figure.4})
- has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.372 
-       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-7-1.pdf>]
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-9-1".pdf, id=178, 
-469.755pt x 325.215pt>
-File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-9-1".pdf Grap
-hic file (type pdf)
-<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-9-1".pdf>
-Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-9-1".pdf  used on input line 375.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[13pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
+[12pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.378 
+       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-7-1.pdf>]
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-9-1".pdf, id=193, 
+469.755pt x 325.215pt>
+File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-9-1".pdf Grap
+hic file (type pdf)
+<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-9-1".pdf>
+Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
+chunk-9-1".pdf  used on input line 381.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[13pdfTeX warning (ext4): destination with the same identifier (name{figure.6})
+ has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.384 
        <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-8-1.pdf>] [1
-4pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) h
+4pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.407 
+l.413 
        <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-9-1.pdf>]
-<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-11-1".pdf, id=198,
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-11-1".pdf, id=213,
  469.755pt x 325.215pt>
 File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-11-1".pdf Gra
 phic file (type pdf)
 <use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-11-1".pdf>
 Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
-chunk-11-1".pdf  used on input line 410.
+chunk-11-1".pdf  used on input line 416.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[15pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-12-1".pdf, id=214,
+ 469.755pt x 325.215pt>
+File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-12-1".pdf Gra
+phic file (type pdf)
+<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-12-1".pdf>
+Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
+chunk-12-1".pdf  used on input line 432.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[15pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.417 \newpage
-               <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-11-1
-.pdf>] [16]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 431.
+l.435 
+       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-11-1.pdf>] [
+16pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.473 
+       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-12-1.pdf>]
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-13-1".pdf, id=239,
+ 469.755pt x 325.215pt>
+File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-13-1".pdf Gra
+phic file (type pdf)
+<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-13-1".pdf>
+Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
+chunk-13-1".pdf  used on input line 493.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [17]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 431.
+<"Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-14-1".pdf, id=246,
+ 469.755pt x 325.215pt>
+File: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-14-1".pdf Gra
+phic file (type pdf)
+<use "Shintaku_ENV872_Project_files/figure-latex/""unnamed-chunk-14-1".pdf>
+Package pdftex.def Info: "Shintaku_ENV872_Project_files/figure-latex/""unnamed-
+chunk-14-1".pdf  used on input line 515.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[18pdfTeX warning (ext4): destination with the same identifier (name{figure.10}
+) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.518 
+       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-13-1.pdf>] [
+19pdfTeX warning (ext4): destination with the same identifier (name{figure.11})
+ has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.550 
+       <./Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-14-1.pdf>] [
+20]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 616.
+[21]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 616.
 (./Shintaku_ENV872_Project.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 431.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 431.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 616.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 616.
 Package rerunfilecheck Info: File `Shintaku_ENV872_Project.out' has not changed
 .
-(rerunfilecheck)             Checksum: CCB63D66E05ABD30D64302CAF2CD9BC4;1707.
+(rerunfilecheck)             Checksum: 4B02E628BEAE23EE34A6A7BE56F0D6CD;2409.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 431.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 616.
  ) 
 Here is how much of TeX's memory you used:
- 10859 strings out of 494111
- 158145 string characters out of 6172453
- 218108 words of memory out of 5000000
- 14726 multiletter control sequences out of 15000+600000
+ 10903 strings out of 494111
+ 160261 string characters out of 6172453
+ 218795 words of memory out of 5000000
+ 14752 multiletter control sequences out of 15000+600000
  58932 words of font info for 57 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 46i,6n,34p,496b,386s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.en
-c}{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc
-}</Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.
-pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr1
-2.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lm
-r17.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/
-lmri12.pfb>
-Output written on Shintaku_ENV872_Project.pdf (17 pages, 5384157 bytes).
+ 46i,6n,34p,576b,386s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy
+.enc}{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.
+enc}{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-math
+it.enc}{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-t
+s1.enc}{/Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-e
+c.enc}</Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lm
+bx12.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public/lm
+/lmmi12.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/public
+/lm/lmr12.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/publ
+ic/lm/lmr17.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1/pu
+blic/lm/lmri12.pfb></Users/nikkishintaku/Library/TinyTeX/texmf-dist/fonts/type1
+/public/lm/lmsy10.pfb>
+Output written on Shintaku_ENV872_Project.pdf (21 pages, 29037890 bytes).
 PDF statistics:
- 252 PDF objects out of 1000 (max. 8388607)
- 212 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
- 116 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 342 PDF objects out of 1000 (max. 8388607)
+ 289 compressed objects within 3 object streams
+ 70 named destinations out of 1000 (max. 500000)
+ 144 words of extra memory for PDF output out of 10000 (max. 10000000)
 
