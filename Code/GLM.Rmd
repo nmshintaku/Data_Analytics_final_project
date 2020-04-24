@@ -20,6 +20,7 @@ library(lubridate)
 USGS_gage_processed <- read.csv("./Data/Processed/USGS_Site10337000_gage_processed.csv")
 NOAA_climate_processed <- read.csv("./Data/Processed/NOAA_TahoeCity_climate_processed.csv")
 USGS_NOAA_combined <- read.csv("./Data/Processed/USGS_NOAA_combined_processed.csv")
+USGS_NOAA_samedates <- read.csv("./Data/Processed/USGS_NOAA_samedate_processed.csv")
 
 #theme
 mytheme <- theme_stata(base_size = 14, base_family = "sans", scheme = "s2mono") +
@@ -67,15 +68,15 @@ Important components of the linear regression are the correlation and the R-squa
 
 ```{r}
 #can we predict lake level (gage height) from precipitation
-gage_height_slm <- lm(data = USGS_NOAA_combined, gage_height ~ PRCP)
-summary(gage_height_lm)
-#for every 1(in) of precipitation, there is -0.112 gage height. 0(in) in precip is 5 ft of gage height
-#0.02% of lake level is explained by precip
-#significant pvalue 0.013
+gage_height_slm <- lm(data = USGS_NOAA_samedates, gage_height ~ PRCP)
+summary(gage_height_slm)
+#for every 1(in) of precipitation, there is -0.107 gage height. 0(in) in precip is 5.86 ft of gage height
+#0.01% of lake level is explained by precip
+#significant pvalue 0.01853
 
-cor.test(USGS_NOAA_combined$gage_height,USGS_NOAA_combined$PRCP)
-#t = -2.4773, df = 22640, p-value = 0.01325
-# cor -0.0164618 
+cor.test(USGS_NOAA_samedates$gage_height,USGS_NOAA_samedates$PRCP)
+#t = -2.355, df = 22732, p-value = 0.01853
+# cor -0.0156181
 #Gage height decreases with more rain??
 ```
 
@@ -89,28 +90,29 @@ cor.test(USGS_NOAA_combined$gage_height,USGS_NOAA_combined$PRCP)
 
 ```{r, fig.height = 3, fig.width = 4}
 par(mfrow = c(2,2), mar=c(1,1,1,1))
-plot(gage_height_lm)
+plot(gage_height_slm)
 par(mfrow = c(1,1))
 #don't put in a report, just use to validate your results 
 ```
 
 ```{r}
-gageheight_by_prcp <- ggplot(USGS_NOAA_combined, aes(x = PRCP, y = gage_height)) +
-  geom_point()
+gageheight_by_prcp <- ggplot(USGS_NOAA_samedates, aes(x = PRCP, y = gage_height)) +
+  geom_point() +
+  geom_smooth(method = "lm")
 print(gageheight_by_prcp)
 #no linear relationship
 
-ggplot(USGS_NOAA_combined, aes(x = PRCP, y = log(gage_height))) +
+ggplot(USGS_NOAA_samedates, aes(x = PRCP, y = log(gage_height))) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
 
 ```{r}
 #single lm with log gage height
-gage_height_slm2 <- lm(data = USGS_NOAA_combined, log(gage_height) ~ PRCP)
+gage_height_slm2 <- lm(data = USGS_NOAA_samedates, log(gage_height) ~ PRCP)
 summary(gage_height_slm2)
-#one unit increase in prcp, a change in log value of gage height is -0.02
-#p-value: 0.005774, 22640 DF, Adjusted R-squared:  0.0002923 
+#one unit increase in prcp, a change in log value of gage height is -0.026
+#p-value: 0.008027, 22732 DF, Adjusted R-squared:  0.0002651
 
 par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(gage_height_slm2)
@@ -118,28 +120,34 @@ par(mfrow = c(1,1))
 ```
 
 ```{r}
-gage_height_slm3 <- lm(data = Tahoe.naomit, gage_height ~ TMIN)
+gage_height_slm3 <- lm(data = USGS_NOAA_samedates, gage_height ~ TMIN)
 summary(gage_height_slm3)
-#p-value: < 2.2e-16 , Adjusted R-squared:  0.02169, 21438 degrees of freedom
+#p-value: < 2.2e-16 , Adjusted R-squared:   0.02527 , 22732 degrees of freedom
 
 par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(gage_height_slm3)
 par(mfrow = c(1,1))
 
-ggplot(Tahoe.naomit, aes(x = TMIN, y = log(gage_height))) +
+gage_height_slm3 <- lm(data = USGS_NOAA_samedates, log(gage_height) ~ TMIN)
+summary(gage_height_slm3)
+
+ggplot(USGS_NOAA_samedates, aes(x = TMIN, y = gage_height)) +
   geom_point()
 ```
 
 ```{r}
-gage_height_slm4 <- lm(data = Tahoe.naomit, log(gage_height) ~ TMAX)
+gage_height_slm4 <- lm(data = USGS_NOAA_samedates, gage_height ~ TMAX)
 summary(gage_height_slm4)
-#p-value: < 2.2e-16 , Adjusted R-squared:  0.000625, 21438 degrees of freedom
+#p-value: < 2.2e-16 , Adjusted R-squared:  0.01105, 22732 degrees of freedom
 
 par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(gage_height_slm4)
 par(mfrow = c(1,1))
 
-ggplot(Tahoe.naomit, aes(x = TMAX, y = log(gage_height))) +
+gage_height_slm5 <- lm(data = USGS_NOAA_samedates, log(gage_height) ~ TMAX)
+summary(gage_height_slm4) #same results as reg data 
+
+ggplot(USGS_NOAA_samedates, aes(x = TMAX, y = gage_height)) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
@@ -147,17 +155,18 @@ ggplot(Tahoe.naomit, aes(x = TMAX, y = log(gage_height))) +
 
 ```{r}
 #non-parametric equivalent: Spearman's Rho
-cor.test(USGS_NOAA_combined$gage_height, USGS_NOAA_combined$PRCP, method = "spearman", exact = FALSE)
-#rho -0.02774514 , S = 1.9883e+12, p-value = 2.974e-05
+cor.test(USGS_NOAA_samedates$gage_height, USGS_NOAA_samedates$PRCP, method = "spearman", exact = FALSE)
+#rho -0.02840093 , S = 2.0139e+12, p-value = 1.845e-05
 ```
 
 #Multiple Regression
 
 ```{r}
-gage_height_mlm <- lm(data = USGS_NOAA_combined, gage_height ~ PRCP + TMIN + SNOW)
+gage_height_mlm <- lm(data = USGS_NOAA_samedates, gage_height ~ PRCP + TMIN + SNOW)
 summary(gage_height_mlm)
-#p-value: < 2.2e-16, TMIN and SNOW are significant predictors of gage height 
-#Adjusted R-squared:  0.0238  %3 of our data is explained by predictors 
+#p-value: < 2.2e-16, TMIN and SNOW and PRCP are significant predictors of gage height 
+#Adjusted R-squared:  0.02595  %3 of our data is explained by predictors 
+#df 22730 
 
 ggplot(USGS_NOAA_combined, aes(x = PRCP, y = gage_height, color = TMIN)) +
   geom_point()
@@ -170,26 +179,26 @@ par(mfrow = c(1,1))
 
 ```{r}
 #Akaike's information criterion (AIC) step regression
-Tahoe.naomit <- USGS_NOAA_combined %>%
-  select(gage_height, PRCP, SNOW, SNWD, TMAX, TMIN) %>%
-  na.omit()
+#Tahoe.naomit <- USGS_NOAA_combined %>%
+ # select(gage_height, PRCP, SNOW, SNWD, TMAX, TMIN) %>%
+  #na.omit()
 
-Gage_AIC <- lm(data = Tahoe.naomit, gage_height ~ PRCP + SNOW + SNWD + TMAX + TMIN)
+Gage_AIC <- lm(data = USGS_NOAA_samedates, gage_height ~ PRCP + SNOW + SNWD + TMAX + TMIN)
 step(Gage_AIC)
-#lm(formula = gage_height ~ PRCP + SNWD + TMAX + TMIN, data = Tahoe.naomit)
+#lm(formula = gage_height ~ PRCP + SNWD + TMAX + TMIN, data = USGS_NOAA_samedates)
 #(Intercept)         PRCP         SNWD         TMAX         TMIN  
-   # 4.98141     -0.30882      0.01371     -0.02294      0.06725  
+  #  4.85924     -0.31145      0.01462     -0.02103      0.06739  
 
-Gage_model_AIC <- lm(data = Tahoe.naomit, gage_height ~ PRCP + SNWD + TMAX + TMIN)
+Gage_model_AIC <- lm(data = USGS_NOAA_samedates, gage_height ~ PRCP + SNWD + TMAX + TMIN)
 summary(Gage_model_AIC)
-#p-value: < 2.2e-16, Adjusted R-squared:  0.03494, 21435 DF
+#p-value: < 2.2e-16, Adjusted R-squared:  0.03838, 22729 DF
 #all variables are sig predictors of gage height 
 AIC(Gage_model_AIC)
 plot(Gage_model_AIC, which = c(1))
 plot(Gage_model_AIC, which = c(2))
 car::vif(Gage_model_AIC)
 lmtest::bptest(Gage_model_AIC)
-ols_plot_cooksd_bar(Gage_model_AIC)
+#ols_plot_cooksd_bar(Gage_model_AIC)
 ```
 
 

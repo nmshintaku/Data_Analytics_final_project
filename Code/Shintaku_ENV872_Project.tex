@@ -86,6 +86,14 @@
     \date{}
     \predate{}\postdate{}
   
+\usepackage{float}
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
 
 \begin{document}
 \maketitle
@@ -97,12 +105,6 @@
 \newpage
 \listoffigures 
 \newpage
-
-\begin{figure}
-\centering
-\includegraphics{Tahoe.png}
-\caption{caption}
-\end{figure}
 
 \hypertarget{rationale-and-research-questions}{%
 \section{Rationale and Research
@@ -131,14 +133,15 @@ consequences of climate change and the task to keep water levels below
 maximum legal limit, it is important to understand what atmospheric
 factors play a role in Lake Tahoe's water level.
 
-This analysis investigates the trends in Lake Tahoe's water level
-accross the time period 1957 - 2019, and the possible drivers of lake
-level through the research questions:
+This analysis investigates the trends in Lake Tahoe's water level and
+the possible drivers of lake level accross the time period of 1957 -
+2019 through the research questions:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  How does lake level in Lake Tahoe change over the years?
+  How does lake level in Lake Tahoe change over the years? Is there an
+  increasing or decreasing trend in lake level over time?
 \item
   What are significant atmospheric predictors of lake level in Lake
   Tahoe?
@@ -146,11 +149,11 @@ level through the research questions:
 
 The gage station site for measuring lake water level (or gage height) is
 located in Tahoe City, CA where the dam is controlled, and the data was
-downloaded from USGS. Subsequent atmospheric data include precipitation,
-snow fall, snow depth, average daily temperature, maximum daily
-temperature, and minimum daily temperature downloaded from NOAA and
-subsetted to the Tahoe City, CA station to be as accurate as possible
-for data collection location.
+downloaded from USGS. Subsequent atmospheric data includes
+precipitation, snow fall, snow depth, average daily temperature, maximum
+daily temperature, and minimum daily temperature downloaded from NOAA
+and subsetted to the Tahoe City, CA station to be as accurate as
+possible for data collection location.
 
 \emph{Fun Fact: If you were to pour Lake Tahoe out onto an area the size
 of California, the water would still be 14 inches deep.}
@@ -177,7 +180,7 @@ dropped, leaving only date and gage height. There was a time period from
 January 1920 - April 1920 with gage height measurements, and then no
 measurements until October 1, 1957 so a decision was made to remove the
 3 months of data in 1920 because the gap between 1920 and 1957 is too
-large to interpolate daily measurements. In addition, the three months
+large to interpolate daily measurements. Furthermore, the three months
 of data is too short of a time period to do a time series analysis.
 After that wranging, there were 3 gage height NAs so these were linearly
 interpolated to create a complete dataset.
@@ -258,15 +261,155 @@ minimum and maximum daily temperatures.
 \hypertarget{exploratory-analysis}{%
 \section{Exploratory Analysis}\label{exploratory-analysis}}
 
+To visualize what all the data looks like across time, each variable was
+plotted side by side using the original dates provided. Figure 1 shows
+the six variables that the analysis is investigating. It is clear in
+Graph A that gage height measurements are available beginning in the
+late 1950s to present. The gage height data indicates an oscillation
+pattern from high lake level to low lake level throughout the years. The
+NOAA climate data is graphed starting from the early 1900s, and there
+are clear some data gaps in precipitation (Graph B) and snow depth
+(Graph D). Graph E and F represent the daily temperatures in degrees
+celsisus with the red color symbolizing positive temperatures and the
+blue color symbolizing negative temperatures. Out of the NOAA climate
+data, there is no comprehensible pattern throughout the time period.
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-3-1.pdf}
+\caption{Lake Tahoe Gage Height and Climate Data Time Series 1903-2019}
+\end{figure}
+
+Because this analysis is looking at predictors of gage height (or lake
+level), the NOAA climate data was cut to match the same dates as the
+USGS data for 1957 - 2019. Figure 2 shows the distribution of the six
+variables across those years. Again, out of the NOAA climate data, there
+is no comprehensible pattern throughout the time period.
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-5-1.pdf}
+\caption{Lake Tahoe Gage Height and Climate Data Time Series 1957-2019}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-6-1.pdf}
+\caption{Frequency Polygons Plot of Gage Height and Climate Data}
+\end{figure}
+
+A frequency polygon graph was created to view how many observations
+occurred for each measurement divided among 50 bins on the x-axis.
+Figure 3 shows that precipitation, snow, and snow depth had the highest
+observations with measurements closest to 0. Minimum temperature ranged
+from 30-40 being the observations, and maximum temperature ranged from
+40-80. Gage height topped around a measurement of 7-10. This frequency
+polygons graph is useful to compare each of our variables to each other
+and gives a good overview of where the majority of the measurements
+lies.
+
 \newpage
 
 \hypertarget{analysis}{%
 \section{Analysis}\label{analysis}}
 
-\hypertarget{question-1-insert-specific-question-here-and-add-additional-subsections-for-additional-questions-below-if-needed}{%
-\subsection{Question 1: \textless{}insert specific question here and add
-additional subsections for additional questions below, if
-needed\textgreater{}}\label{question-1-insert-specific-question-here-and-add-additional-subsections-for-additional-questions-below-if-needed}}
+This study investigates trends of water level of Lake Tahoe using a
+\emph{Time Series} analysis and explores significant atmospheric factors
+of changing water level using a \emph{Generalized Linear Models}
+approach.
+
+\hypertarget{question-1-how-does-lake-level-in-lake-tahoe-change-over-the-years}{%
+\subsection{Question 1: How does lake level in Lake Tahoe change over
+the
+years?}\label{question-1-how-does-lake-level-in-lake-tahoe-change-over-the-years}}
+
+Time series is when a response variable is tracked over time. This time
+series will include an explanatory time component and a response
+variable (gage height). Time series come with some challenges that need
+to be addressed when performing the analysis. Time series do not deal
+with data gaps well; missing data in this dataset has already been taken
+care of through linear interpolation. In addition, seasonality, which
+are cyclic patterns in variables that occur at regular intervals, could
+affect interpretation of a monotonic trend. This analysis will take
+seasonality into consideration for gage height data.
+
+Times series are made up of several components:
+
+\begin{itemize}
+\tightlist
+\item
+  Seasonal Component: repetition over a fixed known period
+\item
+  Trend Component: quantifies upward or downward progression over time;
+  does not have to be monotonic
+\item
+  Error/Random Component: the remainder of the time series after the
+  other components are accounted for; reflects noise in the dataset
+\end{itemize}
+
+Lake water level (gage height) is measured daily at the Tahoe City gage
+station. Since we are working with one location measured over time, this
+is a great dataset for time series analysis.
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-7-1.pdf}
+\caption{Lake Tahoe Gage Height Time Series Decomposed}
+\end{figure}
+
+Figure 4 shows the decomposed components of the time series for gage
+height. The grey boxes on the right show the relative size of the y axis
+data to each other. The data component is the result of the seasonal
+component plus the trend component, and the remainder is left over data
+that doesn't fit in either seasonal or trend. Seasonal component is
+extracted from 365 days and represents a repeated cycle.
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-8-1.pdf}
+\caption{Trend Component Against Actual Data}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-9-1.pdf}
+\caption{Seasonal Component Against Actual Data}
+\end{figure}
+
+Figures 5 and 6 shows the trend and seasonal decomposed components
+against the original gage height data. The decomposition is not
+constrained by a lower bound of zero, which is why Figure 5 shows the
+seasonal component going below zero. In this case, the gage height could
+go below zero because its baseline is lake elevation at 6,220 ft. If
+gage height were to go below zero, it would likely imply a drought.
+
+For trend analysis, this study considers a monotonic trend. Monotonic
+trends are a gradual shift over time that is consistent in direction,
+for example in response to climate change. This monotonic analysis uses
+a Seasonal Mann-Kendall test. \textbf{Seasonal Mann-Kendall} assumes
+seasonality, non-parametric, no temporal autocorelation, and identical
+distribution.
+
+We are interested in knowing how lake level has changed over time while
+incorporating the seasonal component. The Seasonal Mann-Kendall assumes
+no temporal autocorrelation, but daily data is prone to temporal
+autocorrelation. In this case,the data is collaspoed down into monthly
+data to (1) reduce temporal autocorrelation and (2) break down the
+potential seasonal trend into more interpretable components. Monthly
+mean gage height was calculated for this test.
+
+The Seasonal Mann-Kendall test resulted in a significant trend with lake
+level over time in Lake Tahoe (Seasonal Mann-Kendall, z = -5.9414,
+p-value = 2.827e-09). Since there is a significant trend present,
+\emph{Sen's Slope} was computed to quantify the trend. Sen's slope
+indicates a decreasing trend over time of -0.0021 as shown on Figure 7
+(Sen's Slope, z = -5.955, p-value = 2.601e-09).
+
+\begin{figure}
+\centering
+\includegraphics{Shintaku_ENV872_Project_files/figure-latex/unnamed-chunk-11-1.pdf}
+\caption{Monthly Mean Gage Height Data with Sen's Slope Trend}
+\end{figure}
 
 \hypertarget{question-2}{%
 \subsection{Question 2:}\label{question-2}}

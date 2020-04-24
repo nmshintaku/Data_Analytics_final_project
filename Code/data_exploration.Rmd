@@ -66,7 +66,7 @@ class(NOAA_climate$DATE)
 
 ```{r}
 #explore USGS data
-ggplot(USGS_gage_height, aes(x = datetime, y = gage_height)) +
+ggplot(USGS_gage_processed, aes(x = datetime, y = gage_height)) +
   geom_line()
 
 ggplot(USGS_gage_height) +
@@ -83,10 +83,17 @@ ggplot(NOAA_climate) +
   xlim(0,5) +
   ylim(0,8000)
 
-ggplot(NOAA_climate) +
-  geom_freqpoly(aes(x = PRCP), bins = 50) +
-  geom_freqpoly(aes(x = TAVG), bins = 50, color = "blue") +
-  geom_freqpoly(aes(x = SNOW), bins = 50, lty = 2)
+USGS_NOAA_gathered <- gather(USGS_NOAA_samedates, "weather", "measurement", PRCP:TMIN)
+ggplot(USGS_NOAA_samedates) +
+  geom_freqpoly(aes(x = PRCP), bins = 50, lty = 3, color = "green") +
+  geom_freqpoly(aes(x = TMIN), bins = 50, color = "blue") +
+  geom_freqpoly(aes(x = SNOW), bins = 50, lty = 2) +
+  geom_freqpoly(aes(x = SNWD), bins = 50, color = "red") +
+  geom_freqpoly(aes(x = TMAX), bins = 50, color = "purple", show.legend = TRUE) +
+  geom_freqpoly(aes(x = gage_height), bins = 50, show.legend = TRUE) 
+
+ggplot(USGS_NOAA_gathered) +
+  geom_freqpoly(aes(x = measurement, color = weather), bins = 50)
 
 ggplot(NOAA_climate) +
   geom_point(aes(x = PRCP, y = TAVG))

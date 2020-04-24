@@ -150,6 +150,11 @@ USGS_NOAA_samedates$TMIN <- na.approx(USGS_NOAA_samedates$TMIN)
 write.csv(USGS_NOAA_samedates, file = "./Data/Processed/USGS_NOAA_samedate_processed.csv", row.names = FALSE)
 ```
 
+```{r}
+UGSG_NOAA_gathered <- gather(USGS_NOAA_samedates, "weather", "measurement", PRCP:TMIN)
+  
+```
+
 #Data Visualization
 
 ```{r, include=FALSE}

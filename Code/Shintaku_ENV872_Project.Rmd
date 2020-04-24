@@ -4,6 +4,8 @@ output:
     keep_tex: yes
     fig_caption: yes
     number_sections: yes
+    includes:
+      in_header: my_header.tex
 geometry: margin=2.54cm
 title: "Predictors of Lake Level Changes in Lake Tahoe, CA"
 subtitle: "https://github.com/nmshintaku/Data_Analytics_final_project"
@@ -49,19 +51,31 @@ USGS_NOAA_samedates <- read.csv("./Data/Processed/USGS_NOAA_samedate_processed.c
 
 ```
 
+```{r, include = FALSE}
+#changing date from factor to Date
+USGS_gage_processed$DATE <- as.Date(USGS_gage_processed$DATE, format = "%Y-%m-%d") 
+class(USGS_gage_processed$DATE)
+
+NOAA_climate_processed$DATE <- as.Date(NOAA_climate_processed$DATE, format = "%Y-%m-%d")
+
+USGS_NOAA_combined$DATE <- as.Date(USGS_NOAA_combined$DATE, format = "%Y-%m-%d")
+
+USGS_NOAA_samedates$DATE <- as.Date(USGS_NOAA_samedates$DATE, format = "%Y-%m-%d")
+```
+
 # Rationale and Research Questions
 
 Lake Tahoe measures at 6,220 feet above sea level, and is 22 miles long and 12 miles long spanning across the California-Nevada state border. Lake Tahoe water is 99.994% pure contributing its legendary, beautiful water clarity. However, Lake Tahoe is facing decline of water clarity and health from the impacts of climate change, invasive species, and pollution. Climate change is causing more precipitation to fall as rain rather than snow, which leads to increase stormwater runoff carrying sediment into Lake Tahoe. In addition, California is experiencing extended droughts affecting amount of annual precipitation. Inadvertently, climate change is also increasing the lake's water temperature and affecting regional weather patterns that could change the lake's ecosystem. Snowmelt from 63 tributaries in the watershed adds 65% of Lake Tahoe's water, and the other 35% falls as precipitation directly in the lake. 
 
 Lake Tahoe's water level is controlled at the Tahoe City Dam, its only outlet. The legal limit for water above the natural rim at that dam is 6,229.1 ft. If the lake reaches its legal limit, flooding would begin to impact the area along with damage from erosion. With the unforeseeable consequences of climate change and the task to keep water levels below maximum legal limit, it is important to understand what atmospheric factors play a role in Lake Tahoe's water level. 
 
-This analysis investigates the trends in Lake Tahoe's water level accross the time period 1957 - 2019, and the possible drivers of lake level through the research questions:
+This analysis investigates the trends in Lake Tahoe's water level and the possible drivers of lake level accross the time period of 1957 - 2019 through the research questions:
 
-1. How does lake level in Lake Tahoe change over the years?
+1. How does lake level in Lake Tahoe change over the years? Is there an increasing or decreasing trend in lake level over time?
 
 2. What are significant atmospheric predictors of lake level in Lake Tahoe?
 
-The gage station site for measuring lake water level (or gage height) is located in Tahoe City, CA where the dam is controlled, and the data was downloaded from USGS. Subsequent atmospheric data include precipitation, snow fall, snow depth, average daily temperature, maximum daily temperature, and minimum daily temperature downloaded from NOAA and subsetted to the Tahoe City, CA station to be as accurate as possible for data collection location. 
+The gage station site for measuring lake water level (or gage height) is located in Tahoe City, CA where the dam is controlled, and the data was downloaded from USGS. Subsequent atmospheric data includes precipitation, snow fall, snow depth, average daily temperature, maximum daily temperature, and minimum daily temperature downloaded from NOAA and subsetted to the Tahoe City, CA station to be as accurate as possible for data collection location. 
 
 *Fun Fact: If you were to pour Lake Tahoe out onto an area the size of California, the water would still be 14 inches deep.*
 
@@ -73,7 +87,7 @@ The gage station site for measuring lake water level (or gage height) is located
 
 The data for lake level was downloaded from USGS Water-Quality Data for the Nation website at https://waterdata.usgs.gov/nwis/qw. The dataset contains daily gage height measurements in feet from January 1920 - December 2019 from one station (Site #103370000) in Tahoe City, CA. USGS reports that gage height is measured from the recorded lake elevation of 6,220 ft as the zero basline. Gage height measurement + current lake elevation (6,220 ft) will give the actual lake level from sea level. 
 
-This dataset was relatively easy to wrangle; unneccesary columns were dropped, leaving only date and gage height. There was a time period from January 1920 - April 1920 with gage height measurements, and then no measurements until October 1, 1957 so a decision was made to remove the 3 months of data in 1920 because the gap between 1920 and 1957 is too large to interpolate daily measurements. In addition, the three months of data is too short of a time period to do a time series analysis. After that wranging, there were 3 gage height NAs so these were linearly interpolated to create a complete dataset. 
+This dataset was relatively easy to wrangle; unneccesary columns were dropped, leaving only date and gage height. There was a time period from January 1920 - April 1920 with gage height measurements, and then no measurements until October 1, 1957 so a decision was made to remove the 3 months of data in 1920 because the gap between 1920 and 1957 is too large to interpolate daily measurements. Furthermore, the three months of data is too short of a time period to do a time series analysis. After that wranging, there were 3 gage height NAs so these were linearly interpolated to create a complete dataset. 
 
 ```{r table1, echo = FALSE, table.cap="\\label{tab:table1}Data Summary"}
 
@@ -118,20 +132,257 @@ Lastly, the USGS processed data and the NOAA Tahoe City climate processed data w
 
 # Exploratory Analysis 
 
+To visualize what all the data looks like across time, each variable was plotted side by side using the original dates provided. Figure 1 shows the six variables that the analysis is investigating. It is clear in Graph A that gage height measurements are available beginning in the late 1950s to present. The gage height data indicates an oscillation pattern from high lake level to low lake level throughout the years. The NOAA climate data is graphed starting from the early 1900s, and there are clear some data gaps in precipitation (Graph B) and snow depth (Graph D). Graph E and F represent the daily temperatures in degrees celsisus with the red color symbolizing positive temperatures and the blue color symbolizing negative temperatures. Out of the NOAA climate data, there is no comprehensible pattern throughout the time period. 
 
+```{r, include = FALSE}
+gage_height_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = gage_height)) +
+  geom_line(color = "dodgerblue2") +
+  labs(x = "Date", y = "Gage Height (ft)") +
+  ylim(0, 10) 
+#print(gage_height_plot)
+
+PRCP_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = PRCP)) +
+  geom_point(shape = 1, size = 0.5, color = "palegreen4") +
+  labs(x = "Date", y = "Precipitation (in)") +
+  ylim(0, 8)
+#print(PRCP_plot)
+
+snow_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = SNOW)) +
+  geom_point(size = 0.5, shape = 8, color = "plum3", alpha = 0.5) +
+  labs(x = "Date", y = "Snow Fall (in)") +
+  ylim(0, 45) 
+#print(snow_plot)
+
+snow_depth_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = SNWD)) +
+  geom_point(size = 0.5, shape = 8, color = "palevioletred2", alpha = 0.5) +
+  labs(x = "Date", y = "Snow Depth (in)") +
+  ylim(0,160)
+#print(snow_depth_plot)
+
+tmin_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = TMIN_C, fill = TMIN_C > 0)) +
+  geom_bar(stat = "identity")+
+  labs(x = "Date", y = expression(paste("Minimum Temperature",degree,"C"))) +
+  ylim(-25, 25) +
+  scale_fill_manual(values = c("blue4", "red2")) +
+  theme(legend.position = "none",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+#print(tmin_plot)
+
+tmax_plot <- ggplot(USGS_NOAA_combined, aes(x = DATE, y = TMAX_C, fill = TMAX_C > 0)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Date", y = expression(paste("Maximum Temperature",degree,"C"))) +
+  scale_fill_manual(values = c("blue4", "red2")) +
+  ylim(-10, 35) +
+  theme(legend.position = "none")
+#print(tmax_plot)
+
+graphs_combined <- plot_grid(gage_height_plot, PRCP_plot, snow_plot, snow_depth_plot,
+                             tmin_plot, tmax_plot, 
+                             labels = "AUTO",
+                             align = "h",
+                             axis = "b")
+```
+
+```{r, echo=FALSE,fig.width=10, fig.height = 6, fig.cap="Lake Tahoe Gage Height and Climate Data Time Series 1903-2019"}
+
+plot_grid(graphs_combined) 
+
+```
+
+Because this analysis is looking at predictors of gage height (or lake level), the NOAA climate data was cut to match the same dates as the USGS data for 1957 - 2019. Figure 2 shows the distribution of the six variables across those years. Again, out of the NOAA climate data, there is no comprehensible pattern throughout the time period. 
+
+```{r, include = FALSE}
+gage_height_plot2 <- ggplot(USGS_NOAA_samedates, aes(x = DATE, y = gage_height)) +
+  geom_line(color = "dodgerblue2") +
+  labs(x = "Date", y = "Gage Height (ft)") +
+  ylim(0, 10) 
+#print(gage_height_plot)
+
+PRCP_plot2 <- ggplot(USGS_NOAA_samedates, aes(x = DATE, y = PRCP)) +
+  geom_point(shape = 1, size = 0.5, color = "palegreen4") +
+  labs(x = "Date", y = "Precipitation (in)") +
+  ylim(0, 8)
+#print(PRCP_plot2)
+
+snow_plot2 <- ggplot(USGS_NOAA_samedates, aes(x = DATE, y = SNOW)) +
+  geom_point(size = 0.5, shape = 8, color = "plum3", alpha = 0.5) +
+  labs(x = "Date", y = "Snow Fall (in)") +
+  ylim(0, 45) 
+#print(snow_plot2)
+
+snow_depth_plot2 <- ggplot(USGS_NOAA_samedates, aes(x = DATE, y = SNWD)) +
+  geom_point(size = 0.5, shape = 8, color = "palevioletred2", alpha = 0.5) +
+  labs(x = "Date", y = "Snow Depth (in)") +
+  ylim(0,120)
+#print(snow_depth_plot2)
+
+tmin_plot2 <- ggplot(USGS_NOAA_samedates, aes(x = DATE, y = TMIN_C, fill = TMIN_C > 0)) +
+  geom_bar(stat = "identity")+
+  labs(x = "Date", y = expression(paste("Minimum Temperature",degree,"C"))) +
+  ylim(-20, 20) +
+  scale_fill_manual(values = c("blue4", "red2")) +
+  theme(legend.position = "none",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+#print(tmin_plot2)
+
+tmax_plot2 <- ggplot(USGS_NOAA_samedates, aes(x = DATE, y = TMAX_C, fill = TMAX_C > 0)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Date", y = expression(paste("Maximum Temperature",degree,"C"))) +
+  scale_fill_manual(values = c("blue4", "red2")) +
+  ylim(-10, 35) +
+  theme(legend.position = "none")
+#print(tmax_plot2)
+
+graphs_combined2 <- plot_grid(gage_height_plot2, PRCP_plot2, snow_plot2, snow_depth_plot2,
+                             tmin_plot2, tmax_plot2, 
+                             labels = "AUTO",
+                             align = "h",
+                             axis = "b")
+```
+
+```{r, echo = FALSE, fig.width=10, fig.height = 6, fig.cap="Lake Tahoe Gage Height and Climate Data Time Series 1957-2019"}
+
+plot_grid(graphs_combined2)
+```
+
+```{r, echo = FALSE, warning = FALSE, fig.width=10, fig.height = 6, fig.cap="Frequency Polygons Plot of Gage Height and Climate Data"}
+#create gathered dataset 
+USGS_NOAA_gathered <- gather(USGS_NOAA_samedates, "weather", "measurement", gage_height, PRCP:TMIN)
+
+#plotting frequency polygons 
+tahoe_freq_plot <- ggplot(USGS_NOAA_gathered) +
+  geom_freqpoly(aes(x = measurement, color = weather), bins = 50) +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "Measurement", y = "Count", color = " ")
+print(tahoe_freq_plot)
+```
+
+A frequency polygon graph was created to view how many observations occurred for each measurement divided among 50 bins on the x-axis. Figure 3 shows that precipitation, snow, and snow depth had the highest observations with measurements closest to 0. Minimum temperature ranged from 30-40 being the observations, and maximum temperature ranged from 40-80. Gage height topped around a measurement of 7-10. This frequency polygons graph is useful to compare each of our variables to each other and gives a good overview of where the majority of the measurements lies.
 
 \newpage
 
 # Analysis
 
+This study investigates trends of water level of Lake Tahoe using a *Time Series* analysis and explores significant atmospheric factors of changing water level using a *Generalized Linear Models* approach. 
 
+## Question 1: How does lake level in Lake Tahoe change over the years?
 
-## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+Time series is when a response variable is tracked over time. This time series will include an explanatory time component and a response variable (gage height). Time series come with some challenges that need to be addressed when performing the analysis. Time series do not deal with data gaps well; missing data in this dataset has already been taken care of through linear interpolation. In addition, seasonality, which are cyclic patterns in variables that occur at regular intervals, could affect interpretation of a monotonic trend. This analysis will take seasonality into consideration for gage height data. 
 
-## Question 2: 
+Times series are made up of several components:
 
+* Seasonal Component: repetition over a fixed known period 
+* Trend Component: quantifies upward or downward progression over time; does not have to be monotonic
+* Error/Random Component: the remainder of the time series after the other components are accounted for; reflects noise in the dataset
 
+Lake water level (gage height) is measured daily at the Tahoe City gage station. Since we are working with one location measured over time, this is a great dataset for time series analysis. 
 
+```{r, echo=FALSE, fig.cap="Lake Tahoe Gage Height Time Series Decomposed"}
+#creating time series object on gage height, daily data
+Tahoe_gage_height_ts <- ts(USGS_gage_processed[[2]], frequency = 365)
+
+# Generate the decomposition
+Tahoe_gage_height_Decomposed <- stl(Tahoe_gage_height_ts, s.window = "periodic")
+plot(Tahoe_gage_height_Decomposed)
+
+```
+
+Figure 4 shows the decomposed components of the time series for gage height. The grey boxes on the right show the relative size of the y axis data to each other. The data component is the result of the seasonal component plus the trend component, and the remainder is left over data that doesn't fit in either seasonal or trend. Seasonal component is extracted from 365 days and represents a repeated cycle. 
+
+```{r, echo=FALSE, fig.cap="Trend Component Against Actual Data"}
+# extracting the components and turn them into data frames to visualize
+Tahoe_gage_height_Components <- as.data.frame(Tahoe_gage_height_Decomposed$time.series[,1:3])
+Tahoe_gage_height_Components <- mutate(Tahoe_gage_height_Components,
+                      Observed = USGS_gage_processed$gage_height,     
+                      Date = USGS_gage_processed$DATE)
+
+# Visualize how the trend maps onto the data
+ggplot(Tahoe_gage_height_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = trend, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab("Gage Height (ft)")
+```
+
+```{r, echo=FALSE, fig.cap="Seasonal Component Against Actual Data"}
+# Visualize how the seasonal cycle maps onto the data
+ggplot(Tahoe_gage_height_Components) +
+  geom_line(aes(y = Observed, x = Date),  size = 0.25) +
+  geom_line(aes(y = seasonal, x = Date), color = "#c13d75ff") +
+  geom_hline(yintercept = 0, lty = 2) +
+  ylab("Gage Height (ft)")
+```
+
+Figures 5 and 6 shows the trend and seasonal decomposed components against the original gage height data. The decomposition is not constrained by a lower bound of zero, which is why Figure 5 shows the seasonal component going below zero. In this case, the gage height could go below zero because its baseline is lake elevation at 6,220 ft. If gage height were to go below zero, it would likely imply a drought.
+
+For trend analysis, this study considers a monotonic trend. Monotonic trends are a gradual shift over time that is consistent in direction, for example in response to climate change. This monotonic analysis uses a Seasonal Mann-Kendall test. **Seasonal Mann-Kendall** assumes seasonality, non-parametric, no temporal autocorelation, and identical distribution. 
+
+We are interested in knowing how lake level has changed over time while incorporating the seasonal component. The Seasonal Mann-Kendall assumes no temporal autocorrelation, but daily data is prone to temporal autocorrelation. In this case,the data is collaspoed down into monthly data to (1) reduce temporal autocorrelation and (2) break down the potential seasonal trend into more interpretable components. Monthly mean gage height was calculated for this test.
+
+```{r, include = FALSE}
+#monthly mean gage height 
+Tahoe_gage_height_monthly <- USGS_gage_processed %>%
+  mutate(Year = year(DATE),
+         Month = month(DATE)) %>%
+  group_by(Year, Month) %>%
+  summarise(gage_height = mean(gage_height))
+#changing date to the first of every month
+Tahoe_gage_height_monthly$Date <- as.Date(paste(Tahoe_gage_height_monthly$Year,
+                                                Tahoe_gage_height_monthly$Month,
+                                                1, sep = "-"),
+                                          format = "%Y-%m-%d")
+
+# Generate time series (smk.test needs ts, not data.frame)
+Tahoe_gage_monthly_ts <- ts(Tahoe_gage_height_monthly$gage_height, frequency = 12, 
+                            start = c(1957, 10, 1), end = c(2019, 12, 1))
+
+# Run SMK test only on a time series object
+Tahoe_gage_height_trend <- smk.test(Tahoe_gage_monthly_ts)
+
+# Inspect results
+Tahoe_gage_height_trend
+summary(Tahoe_gage_height_trend)
+#significant trend over time bc p-value is 2.827e-09 (less than 0.05), z = -5.9414
+
+#Sen's Slope to quantify trend of lake level over time 
+sens.slope(Tahoe_gage_monthly_ts, conf.level = 0.95)
+#Sen's Slop z = -5.955, p value = 2.601e-09, sen's slope -0.002 (linear rate of change- decreasing)
+#95 percent confidence interval:
+ #-0.002881512 -0.001386843
+
+```
+
+The Seasonal Mann-Kendall test resulted in a significant trend with lake level over time in Lake Tahoe (Seasonal Mann-Kendall, z = -5.9414, p-value = 2.827e-09). Since there is a significant trend present, *Sen's Slope* was computed to quantify the trend. Sen's slope indicates a decreasing trend over time of -0.0021 as shown on Figure 7 (Sen's Slope, z = -5.955, p-value = 2.601e-09). 
+
+```{r, echo = FALSE, fig.cap="Monthly Mean Gage Height Data with Sen's Slope Trend"}
+#plot trend on gage height data
+gage_height_monthly <- 
+  ggplot(Tahoe_gage_height_monthly, aes(x = Date, y = gage_height)) +
+  geom_line() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue3") +
+  labs(y = "Gage Height (ft)")
+print(gage_height_monthly)
+```
+
+## Question 2: What are significant atmospheric predictors of lake level in Lake Tahoe?
+
+In order to find significant atmospheric predictors of lake level, generalized linear modeling (GLM) was used through linear regression. A linear regression is formed of a continuous response variable plus a combination of 1+ continuous response variables (and the error term). The equation is an algebraic expression:
+$$y = \alpha + \beta*x + \epsilon $$
+
+The goal of linear regression is to find the line of best fit that minimizes the total distance of points from the line. With GLM comes some assumptions:
+
+* Data resisduals approximate a normal distribution
+* Variance in response variable is equal among groups (for analyzing categorical explanatory variables)
+
+This analysis is going to compute both simple linear regression and multiple linear regression. 
+
+### Simple Linear Regression
+
+**Single Linear Regression** is with a continuous response and one continuous explanatory variable.
+
+### Multiple Linear Regression
+
+**Multiple Linear Regression** is with a continuous response and two or more continuous explanatory variables.
 
 \newpage
 
